@@ -8,38 +8,40 @@ export class UserController extends BaseController {
     super();
   }
   /// Read a list or users
-  async getAll(req: Request, res: Response) {
-    return res.json(await this.userRepository.getAll());
+  async getAll() {
+    return {
+      data: await this.userRepository.getAll(),
+    };
   }
 
   /// Read a single user
-  async get(req: Request, res: Response) {
-    return res.json({
+  async get(req: Request) {
+    return {
       data: await this.userRepository.get(req.params.id),
-    });
+    };
   }
 
   /// create a new user
-  async create(req: Request, res: Response) {
-    return res.json({
+  async create(req: Request) {
+    return {
       data: await this.userRepository.create(req.body),
-    });
+    };
   }
 
   /// update a user
-  async update(req: Request, res: Response) {
-    return res.json({
+  async update(req: Request) {
+    return {
       data: await this.userRepository.update({
         ...req.body,
         id: req.params.id,
       }),
-    });
+    };
   }
 
   /// delete a user
-  async delete(req: Request, res: Response) {
-    return res.json({
+  async delete(req: Request) {
+    return {
       data: await this.userRepository.delete(req.params.id),
-    });
+    };
   }
 }
