@@ -44,7 +44,7 @@ export class Database<Entity extends object & { id: string }> {
     return data.find((it) => it.id === id);
   }
 
-  async update(input: Entity) {
+  async update(input: Entity): Promise<Entity> {
     const data = await this.readAll();
     const index = data.findIndex((item) => item.id === input.id);
     data[index] = {
@@ -53,6 +53,7 @@ export class Database<Entity extends object & { id: string }> {
     } as Entity;
 
     await fs.writeFile(this.databasePath, JSON.stringify(data, null, 2));
+    return data[index];
   }
 
   async delete(id: string) {
@@ -62,13 +63,15 @@ export class Database<Entity extends object & { id: string }> {
     await fs.writeFile(this.databasePath, JSON.stringify(data, null, 2));
   }
 
-  async insert(input: Entity) {
+  async insert(input: Entity): Promise<Entity> {
     const data = await this.readAll();
-    // add a new change
-    data.push({
+    const newData = {
       ...input,
       id: uuidv4(),
-    } as Entity);
+    } satisfies Entity;
+    // add a new change
+    data.push(newData);
     await fs.writeFile(this.databasePath, JSON.stringify(data, null, 2));
+    return newData;
   }
 }

@@ -1,6 +1,9 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { UserRepository } from './user.repository';
 import { BaseController } from '@tscc/core';
+import { UserModel } from './user.model';
+import { route } from './user.boostrap';
+import { z } from 'zod';
 
 export class UserController extends BaseController {
   constructor(public userRepository: UserRepository) {
@@ -8,40 +11,77 @@ export class UserController extends BaseController {
     super();
   }
   /// Read a list or users
-  async getAll() {
+  getAll = route.get('/').handler(async () => {
     return {
       data: await this.userRepository.getAll(),
     };
-  }
+  });
 
   /// Read a single user
-  async get(req: Request) {
-    return {
-      data: await this.userRepository.get(req.params.id),
-    };
-  }
+  get = route
+    .get('/:id')
+    .params(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .handler(async ({ params }) => {
+      return {
+        data: await this.userRepository.get(params.id),
+      };
+    });
 
   /// create a new user
-  async create(req: Request) {
-    return {
-      data: await this.userRepository.create(req.body),
-    };
-  }
+  create = route
+    .post('/')
+    .body(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+        email: z.string().email(),
+      })
+    )
+    .handler(async ({ body }) => {
+      return {
+        data: await this.userRepository.create(body as UserModel),
+      };
+    });
 
   /// update a user
-  async update(req: Request) {
-    return {
-      data: await this.userRepository.update({
-        ...req.body,
-        id: req.params.id,
-      }),
-    };
-  }
+  update = route
+    .put('/:id')
+    .params(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .body(
+      z.object({
+        username: z.string(),
+        password: z.string(),
+        email: z.string().email(),
+      })
+    )
+    .handler(async ({ params, body }) => {
+      return {
+        data: await this.userRepository.update({
+          id: params.id,
+          ...body,
+        }),
+      };
+    });
 
   /// delete a user
-  async delete(req: Request) {
-    return {
-      data: await this.userRepository.delete(req.params.id),
-    };
-  }
+  delete = route
+    .delete('/:id')
+    .params(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .handler(async ({ params }) => {
+      return {
+        data: await this.userRepository.delete(params.id),
+      };
+    });
 }

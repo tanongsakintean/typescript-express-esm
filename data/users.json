@@ -1,8 +1,14 @@
 [
   {
-    "id": "999383b1-4056-4d21-9afe-9bb7e729af15",
-    "username": "firstUser",
-    "password": "password",
-    "email": "first@gmail.com"
+    "username": "beer tanongsak",
+    "email": "tanongsakintean@gmail.com",
+    "password": "1234",
+    "id": "a5dcbf9f-0ac1-46de-801f-e5440c54436c"
+  },
+  {
+    "username": "beer",
+    "password": "1234",
+    "email": "tanongsakintean@gmail.com",
+    "id": "be02691e-d393-4365-a000-b84b7cd20583"
   }
 ]

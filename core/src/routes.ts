@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import { MaybePromise } from './types';
 import { BaseResponse } from './response';
+import { HandlerMetadata } from './typed-routes';
 
 export const catchAsync =
   (
@@ -66,5 +67,19 @@ export class Router {
     const { handler, middleware } = this.extractHandlers(handlers);
 
     this.instance.delete(path, middleware, this.preRequest(handler));
+  }
+
+  registerClassRoutes(classInstance: object) {
+    const fields = Object.values(classInstance);
+    fields.forEach((field) => {
+      const route = field as HandlerMetadata;
+      if (route.__handlerMetadata) {
+        const { path, handler } = route;
+        const method = route.method.toLocaleLowerCase();
+        console.log('Registering route', method, path);
+        (this.instance.route(path) as any)[method](this.preRequest(handler));
+      }
+    });
+    return this;
   }
 }
